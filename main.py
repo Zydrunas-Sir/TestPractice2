@@ -22,13 +22,4 @@ def join_comments_by_advert(advert_id):
     select_query(query, params)
 
 
-def update_advert_item_if_creator(new_item, user_id, item_id):
-    query = """UPDATE Advert SET item = %s WHERE admin_id = %s AND id = %s"""
-    params = [new_item, user_id, item_id]
-    CUD_query(query, params)
 
-
-def update_comment_if_creator(comment_id, user_id, advert_id, new_comment):
-    query = """UPDATE Comments SET comment = %s WHERE id = %s AND user_id = %s AND advert_id = %s"""
-    params = [new_comment, comment_id, user_id, advert_id]
-    CUD_query(query, params)

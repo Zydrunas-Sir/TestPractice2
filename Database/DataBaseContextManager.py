@@ -2,7 +2,7 @@ import pymysql
 
 
 class DatabaseContextManager:
-    def __init__(self, select_query =False):
+    def __init__(self, select_query=False):
         self.select_query = select_query
 
     def __enter__(self):
@@ -26,3 +26,9 @@ def select_query(query, params=None):
         cursor.execute(query, params)
         for record in cursor.fetchall():
             print(record)
+
+
+def select_function(query, params=None):
+    with DatabaseContextManager(is_select=True) as db:
+        db.execute(query, params)
+        return db.fetchall()

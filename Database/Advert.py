@@ -1,15 +1,15 @@
 import datetime
 
-from Database.DataBaseContextManager import CUD_query, select_query
+from Database.DataBaseContextManager import CUD_query, select_query, select_function
 
 
 def create_advert_table():
     query = """CREATE TABLE IF NOT EXISTS Advert(
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                admin_id INTEGER,
+                user_id INTEGER,
                 category_id INTEGER,
                 item TEXT,
-                number TEXT,
+                description TEXT,
                 date DATETIME,
                 FOREIGN KEY (admin_id) REFERENCES User(id),
                 FOREIGN KEY (category_id) REFERENCES Categories(id))"""
@@ -29,10 +29,19 @@ def select_advert(advert_id):
     select_query(query, params)
 
 
-def update_advert_item(advert_id, new_item):
-    query = """UPDATE Advert SET item = %s WHERE id = %s"""
-    params = [new_item, advert_id]
-    CUD_query(query, params)
+def update_advert_description(description, advert_id, editing_user):
+    get_advert_user_id_query = """Select user_id FROM Advert WHERE id = %s"""
+    get_advert_user_id_params = [advert_id]
+    advert_user_id = select_function(get_advert_user_id_query, get_advert_user_id_params)
+    if editing_user == advert_user_id[0]:
+        edit_advert_query = """ UPDATE Advert
+        SET description = %s
+        WHERE id = %s"""
+        edit_advert_params = [description, advert_id]
+
+        CUD_query(edit_advert_query, edit_advert_params)
+    else:
+        print("You cant edit this advert!!")
 
 
 def delete_advert_by_id(advert_id):
